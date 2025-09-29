@@ -18,18 +18,19 @@ public class MyThread extends Thread {
     public void run() {
         while (true) {
             lock.lock();
-            if (ticket < 100) {
-                System.out.println(Thread.currentThread().getName() + ": " + ticket);
-                try {
-                    Thread.sleep(100);
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
+            try {
+                if (ticket < 100) {
+                    System.out.println(Thread.currentThread().getName() + ": " + ticket);
+                    Thread.sleep(1000);
+                    ticket++;
+                } else {
+                    break;
                 }
-                ticket++;
-            } else {
-                break;
+            } catch (RuntimeException | InterruptedException e) {
+                throw new RuntimeException(e);
+            } finally {
+                lock.unlock();
             }
-            lock.unlock();
         }
     }
 }
